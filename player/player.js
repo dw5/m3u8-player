@@ -1,11 +1,15 @@
 var video = document.getElementById('video');
 
-function playM3u8(url){
+function playM3u8(url, referrer){
   if(Hls.isSupported()) {
       video.volume = 0.3;
       var hls = new Hls();
       var m3u8Url = decodeURIComponent(url)
-      hls.loadSource(m3u8Url);
+      hls.loadSource(m3u8Url, { 
+          headers: {
+              Referer: referrer
+          }
+      });
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED,function() {
         video.play();
@@ -52,7 +56,7 @@ function vidFullscreen() {
     }
 }
 
-playM3u8(window.location.href.split("#")[1])
+playM3u8(window.location.href.split("#")[1], "https://vanillo.tv");
 $(window).on('load', function () {
     $('#video').on('click', function(){this.paused?this.play():this.pause();});
     Mousetrap.bind('space', playPause);
