@@ -5,15 +5,21 @@ function playM3u8(url){
       video.volume = 0.3;
       var hls = new Hls();
       var m3u8Url = decodeURIComponent(url)
-      hls.loadSource(m3u8Url, { 
-          headers: {
-              Referer: "https://vanillo.tv/"
-          }
-      });
+      hls.loadSource(m3u8Url);
       hls.attachMedia(video);
+	  
+/*hls.on(Hls.Events.MEDIA_ATTACHED, function() {
+  hls.attachMedia(video);
+});*/
+
+hls.on(Hls.Events.XHR_SETUP, function(event, xhr) {
+  xhr.setRequestHeader('Referer', 'https://vanillo.tv/');
+});
+	  
       hls.on(Hls.Events.MANIFEST_PARSED,function() {
         video.play();
       });
+	  
       document.title = url
     }
 	else if (video.canPlayType('application/vnd.apple.mpegurl')) {
